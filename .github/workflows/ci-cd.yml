@@ -7,6 +7,12 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+  packages: write
+
 env:
   DOTNET_VERSION: '9.0.x'
   SOLUTION_PATH: './src/INT.VrPay.Client.slnx'
