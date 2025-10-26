@@ -1,0 +1,14 @@
+<Solution>
+  <Project Path="INT.VrPay.Client\INT.VrPay.Client.csproj" Type="C#" />
+  <Folder Name="/Tests/">
+    <Project Path="Tests\INT.VrPay.Client.Tests\INT.VrPay.Client.Tests.csproj" Type="C#" />
+    <Project Path="Tests\INT.VrPay.Client.IntegrationTests\INT.VrPay.Client.IntegrationTests.csproj" Type="C#" />
+  </Folder>
+  <Folder Name="/Samples/">
+    <Project Path="Samples\INT.VrPay.Client.Samples.Console\INT.VrPay.Client.Samples.Console.csproj" Type="C#" />
+  </Folder>
+  <Properties Name="Configuration">
+    <Property Name="Debug|AnyCPU" />
+    <Property Name="Release|AnyCPU" />
+  </Properties>
+</Solution>

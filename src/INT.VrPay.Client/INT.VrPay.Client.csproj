@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>INT.VrPay.Client</RootNamespace>
+    
+    <!-- Package Information -->
+    <PackageId>INT.VrPay.Client</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Salih-Can Özdemir</Authors>
+    <Company>INT</Company>
+    <Description>A robust .NET client library for the VR Payment Gateway API with support for pre-authorization, debit, capture, refund, and reversal operations.</Description>
+    <PackageTags>vrpay;payment;gateway;api-client;dotnet</PackageTags>
+    <RepositoryUrl>https://github.com/mrdariusad/INT.VrPay.Client</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Http" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" />
+    <PackageReference Include="Microsoft.Extensions.Options" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+    <PackageReference Include="Polly" />
+    <PackageReference Include="Polly.Extensions.Http" />
+  </ItemGroup>
+
+</Project>

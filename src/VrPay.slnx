@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/Tests/">
+    <Project Path="Tests\VrPay.Client.IntegrationTests\VrPay.Client.IntegrationTests.csproj" />
+    <Project Path="Tests\VrPay.Client.Tests\VrPay.Client.Tests.csproj" />
+  </Folder>
+  <Folder Name="/Samples/">
+    <Project Path="..\test-console\VrPay.TestConsole.csproj" />
+  </Folder>
+  <Project Path="VrPay.Client\VrPay.Client.csproj" />
+  <Properties Name="Configuration">
+    <Property Name="Debug|AnyCPU" />
+    <Property Name="Release|AnyCPU" />
+  </Properties>
+</Solution>
