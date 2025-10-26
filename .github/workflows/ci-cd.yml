@@ -2,20 +2,23 @@ name: CI/CD
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, develop ]
-  release:
-    types: [ published ]
+    branches: [ main ]
+  workflow_dispatch:
 
 env:
   DOTNET_VERSION: '9.0.x'
   SOLUTION_PATH: './src/INT.VrPay.Client.slnx'
+  PROJECT_PATH: './src/INT.VrPay.Client/INT.VrPay.Client.csproj'
+  UNIT_TESTS_PATH: './src/Tests/INT.VrPay.Client.Tests/INT.VrPay.Client.Tests.csproj'
+  INTEGRATION_TESTS_PATH: './src/Tests/INT.VrPay.Client.IntegrationTests/INT.VrPay.Client.IntegrationTests.csproj'
 
 jobs:
-  build-and-test:
-    name: Build and Test
+  build-and-test-feature:
+    name: Build and Test (Feature Branch)
     runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/main' && github.event_name == 'push'
     
     steps:
     - name: Checkout code
@@ -33,19 +36,78 @@ jobs:
       run: dotnet build ${{ env.SOLUTION_PATH }} --configuration Release --no-restore
       
     - name: Run Unit Tests
-      run: dotnet test ${{ env.SOLUTION_PATH }} --configuration Release --no-build --verbosity normal --filter "FullyQualifiedName~VrPay.Client.Tests" --logger "trx;LogFileName=test-results.trx"
+      run: dotnet test ${{ env.UNIT_TESTS_PATH }} --configuration Release --no-build --verbosity normal --logger "trx;LogFileName=unit-test-results.trx"
       
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
       with:
-        files: '**/test-results.trx'
-        
-  package:
-    name: Create NuGet Package
-    needs: build-and-test
+        files: '**/unit-test-results.trx'
+        check_name: 'Unit Test Results (Feature Branch)'
+
+  build-test-coverage-pr:
+    name: Build, Test and Coverage (PR)
     runs-on: ubuntu-latest
-    if: github.event_name == 'release' || github.ref == 'refs/heads/main'
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.SOLUTION_PATH }}
+      
+    - name: Build
+      run: dotnet build ${{ env.SOLUTION_PATH }} --configuration Release --no-restore
+      
+    - name: Run Unit Tests with Coverage
+      run: |
+        dotnet test ${{ env.UNIT_TESTS_PATH }} \
+          --configuration Release \
+          --no-build \
+          --verbosity normal \
+          --logger "trx;LogFileName=unit-test-results.trx" \
+          --collect:"XPlat Code Coverage" \
+          --results-directory ./coverage
+      
+    - name: Generate Coverage Report
+      uses: danielpalme/ReportGenerator-GitHub-Action@5.3.11
+      with:
+        reports: './coverage/**/coverage.cobertura.xml'
+        targetdir: './coverage-report'
+        reporttypes: 'HtmlInline;Cobertura;MarkdownSummaryGithub'
+        
+    - name: Add Coverage Comment to PR
+      uses: marocchino/sticky-pull-request-comment@v2
+      if: github.event_name == 'pull_request'
+      with:
+        recreate: true
+        path: ./coverage-report/SummaryGithub.md
+        
+    - name: Upload Coverage Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: ./coverage-report
+        
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: always()
+      with:
+        files: '**/unit-test-results.trx'
+        check_name: 'Unit Test Results (PR)'
+
+  build-test-publish-main:
+    name: Build, Test and Publish (Main)
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     
     steps:
     - name: Checkout code
@@ -62,8 +124,32 @@ jobs:
     - name: Build
       run: dotnet build ${{ env.SOLUTION_PATH }} --configuration Release --no-restore
       
+    - name: Run Unit Tests
+      run: |
+        dotnet test ${{ env.UNIT_TESTS_PATH }} \
+          --configuration Release \
+          --no-build \
+          --verbosity normal \
+          --logger "trx;LogFileName=unit-test-results.trx"
+      
+    - name: Run Integration Tests
+      run: |
+        dotnet test ${{ env.INTEGRATION_TESTS_PATH }} \
+          --configuration Release \
+          --no-build \
+          --verbosity normal \
+          --logger "trx;LogFileName=integration-test-results.trx"
+      continue-on-error: true
+      
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: always()
+      with:
+        files: '**/*test-results.trx'
+        check_name: 'Test Results (Main)'
+        
     - name: Pack NuGet Package
-      run: dotnet pack ./src/VrPay.Client/VrPay.Client.csproj --configuration Release --no-build --output ./artifacts
+      run: dotnet pack ${{ env.PROJECT_PATH }} --configuration Release --no-build --output ./artifacts
       
     - name: Upload NuGet Package Artifact
       uses: actions/upload-artifact@v4
@@ -71,8 +157,17 @@ jobs:
         name: nuget-package
         path: ./artifacts/*.nupkg
         
-    - name: Push to GitHub Packages
-      if: github.event_name == 'release'
+    - name: Publish to GitHub Packages
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        dotnet nuget add source --username ${{ github.repository_owner }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
-        dotnet nuget push ./artifacts/*.nupkg --source "github" --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
+        dotnet nuget add source \
+          --username ${{ github.repository_owner }} \
+          --password ${{ secrets.GITHUB_TOKEN }} \
+          --store-password-in-clear-text \
+          --name github \
+          "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" || true
+        dotnet nuget push ./artifacts/*.nupkg \
+          --source "github" \
+          --api-key ${{ secrets.GITHUB_TOKEN }} \
+          --skip-duplicate

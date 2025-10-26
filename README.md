@@ -1,376 +1,749 @@
-# INT.VrPay.Client# VrPay.Client
+# INT.VrPay.Client# INT.VrPay.Client# VrPay.Client
 
 
 
-A robust .NET client library for the VR Payment Gateway API with support for pre-authorization, debit, capture, refund, and reversal operations. Built with Domain-Driven Design principles and production-ready features.A .NET 9.0 client library for the VrPay eCommerce Server-to-Server Payment integration.
+A .NET client library for the VR Payment Gateway API with support for pre-authorization, debit, capture, refund, and reversal operations.
 
 
+
+[![.NET 9.0](https://img.shields.io/badge/.NET-9.0-512BD4)](https://dotnet.microsoft.com/download/dotnet/9.0)A robust .NET client library for the VR Payment Gateway API with support for pre-authorization, debit, capture, refund, and reversal operations. Built with Domain-Driven Design principles and production-ready features.A .NET 9.0 client library for the VrPay eCommerce Server-to-Server Payment integration.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+
+
+## Features
 
 [![.NET 9.0](https://img.shields.io/badge/.NET-9.0-512BD4)](https://dotnet.microsoft.com/download/dotnet/9.0)[![CI/CD](https://github.com/your-org/INT.VrPay/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/your-org/INT.VrPay/actions/workflows/ci-cd.yml)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)[![NuGet](https://img.shields.io/nuget/v/VrPay.Client.svg)](https://www.nuget.org/packages/VrPay.Client/)
+- Pre-Authorization (PA), Direct Debit (DB), Capture (CP), Refund (RF), Reversal (RV)
+
+- Domain-Driven Design architecture[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)[![NuGet](https://img.shields.io/nuget/v/VrPay.Client.svg)](https://www.nuget.org/packages/VrPay.Client/)
+
+- Type-safe models with enum converters
+
+- Built-in retry policies using Polly
+
+- Comprehensive logging support
+
+- Async/await throughout## Features## Features
+
+- ASP.NET Core dependency injection support
 
 
 
-## Features## Features
-
-
+## Installation
 
 - ✅ **Complete Payment Operations**: Pre-authorization, Debit, Capture, Refund, and Reversal✅ **Synchronous Payment Support**
 
+Add the GitHub Packages source to your NuGet configuration:
+
 - 🏗️ **Domain-Driven Design**: Clean architecture with Domain, Application, and Infrastructure layers- Pre-Authorization (PA)
 
-- 🔒 **Type-Safe**: Strongly-typed models with enum converters for API communication- Direct Debit (DB)
+```bash
+
+dotnet nuget add source --username YOUR_GITHUB_USERNAME --password YOUR_GITHUB_PAT --store-password-in-clear-text --name github "https://nuget.pkg.github.com/OWNER/index.json"- 🔒 **Type-Safe**: Strongly-typed models with enum converters for API communication- Direct Debit (DB)
+
+```
 
 - 🔄 **Resilient**: Built-in retry policies using Polly for transient failures- Capture (CP)
 
+Install the package:
+
 - 📝 **Comprehensive Logging**: Integrated logging support via `ILogger`- Refund (RF)
 
-- 🧪 **Well-Tested**: Extensive unit and integration test coverage- Reversal (RV)
+```bash
+
+dotnet add package INT.VrPay.Client- 🧪 **Well-Tested**: Extensive unit and integration test coverage- Reversal (RV)
+
+```
 
 - ⚡ **Async/Await**: Fully asynchronous API for optimal performance
 
+Or add to your `.csproj`:
+
 - 🎯 **Dependency Injection**: Native support for ASP.NET Core DI container✅ **Modern .NET 9.0**
 
-- 📦 **NuGet Package**: Easy installation and version management- Built with latest C# 12 features
+```xml
+
+<PackageReference Include="INT.VrPay.Client" Version="1.0.0" />- 📦 **NuGet Package**: Easy installation and version management- Built with latest C# 12 features
+
+```
 
 - Native AOT compatible
 
+## Quick Start
+
 ## Table of Contents- Nullable reference types enabled
 
+### 1. Configuration
 
+
+
+Add VrPay settings to `appsettings.json`:
 
 - [Installation](#installation)✅ **Production Ready**
 
-- [Quick Start](#quick-start)- Comprehensive error handling
+```json
 
-- [Configuration](#configuration)- Built-in retry logic with Polly
+{- [Quick Start](#quick-start)- Comprehensive error handling
 
-- [Usage Examples](#usage-examples)- Extensive logging support
+  "VrPay": {
 
-  - [Pre-Authorization](#pre-authorization)- Full XML documentation
-
-  - [Direct Debit](#direct-debit)
-
-  - [Capture](#capture)✅ **Developer Friendly**
-
-  - [Refund](#refund)- Dependency Injection support
-
-  - [Reversal](#reversal)- Fluent API
-
-- [Test Cards](#test-cards)- Strong typing
-
-- [Error Handling](#error-handling)- Extension methods
-
-- [Domain Model](#domain-model)
-
-- [Testing](#testing)## Installation
-
-- [Contributing](#contributing)
-
-- [License](#license)Install via NuGet Package Manager:
-
-
-
-## Installation```bash
-
-dotnet add package VrPay.Client
-
-Install the package via NuGet Package Manager:```
-
-
-
-```bashOr via Package Manager Console:
-
-dotnet add package INT.VrPay.Client
-
-``````powershell
-
-Install-Package VrPay.Client
-
-Or via Package Manager Console:```
-
-
-
-```powershell## Quick Start
-
-Install-Package INT.VrPay.Client
-
-```### 1. Configuration
-
-
-
-Or add directly to your `.csproj` file:Add VrPay configuration to your `appsettings.json`:
-
-
-
-```xml```json
-
-<PackageReference Include="INT.VrPay.Client" Version="1.0.0" />{
-
-```  "VrPay": {
-
-    "BaseUrl": "https://test.vr-pay-ecommerce.de/",
-
-## Quick Start    "EntityId": "YOUR_ENTITY_ID",
-
-    "AccessToken": "Bearer YOUR_ACCESS_TOKEN",
-
-### 1. Configure in `appsettings.json`    "TimeoutSeconds": 30,
-
-    "TestMode": true,
-
-```json    "TestModeValue": "EXTERNAL"
-
-{  }
-
-  "VrPay": {}
-
-    "BaseUrl": "https://test.vr-pay-ecommerce.de",```
+    "BaseUrl": "https://test.vr-pay-ecommerce.de",- [Configuration](#configuration)- Built-in retry logic with Polly
 
     "EntityId": "your-entity-id",
 
-    "AccessToken": "Bearer your-access-token",Set your access token as an environment variable (recommended for production):
+    "AccessToken": "Bearer your-access-token",- [Usage Examples](#usage-examples)- Extensive logging support
 
     "UseTestMode": true,
 
-    "TestModeValue": "EXTERNAL",```bash
+    "TestModeValue": "EXTERNAL",  - [Pre-Authorization](#pre-authorization)- Full XML documentation
 
-    "TimeoutSeconds": 30,# Windows
+    "TimeoutSeconds": 30,
 
-    "MaxRetries": 3$env:VRPAY_ACCESS_TOKEN="Bearer your-token-here"
+    "MaxRetries": 3  - [Direct Debit](#direct-debit)
 
   }
 
-}# Linux/Mac
-
-```export VRPAY_ACCESS_TOKEN="Bearer your-token-here"
+}  - [Capture](#capture)✅ **Developer Friendly**
 
 ```
 
-### 2. Register in `Program.cs` (ASP.NET Core)
+  - [Refund](#refund)- Dependency Injection support
 
 ### 2. Register Services
 
+  - [Reversal](#reversal)- Fluent API
+
+In `Program.cs`:
+
+- [Test Cards](#test-cards)- Strong typing
+
 ```csharp
 
-using INT.VrPay.Client.Extensions;In your `Program.cs` or `Startup.cs`:
+using INT.VrPay.Client.Extensions;- [Error Handling](#error-handling)- Extension methods
 
 
 
-var builder = WebApplication.CreateBuilder(args);```csharp
+builder.Services.AddVrPayClient(- [Domain Model](#domain-model)
 
-using VrPay.Client.Extensions;
+    builder.Configuration.GetSection("VrPay"));
 
-// Add VrPay client with configuration
-
-builder.Services.AddVrPayClient(// Add VrPay client
-
-    builder.Configuration.GetSection("VrPay"));builder.Services.AddVrPayClient(builder.Configuration);
-
-```
-
-var app = builder.Build();
-
-```### 3. Use the Client
+```- [Testing](#testing)## Installation
 
 
 
-### 3. Inject and UseInject `IVrPayClient` into your services:
+### 3. Use the Client- [Contributing](#contributing)
 
 
 
-```csharp```csharp
+```csharp- [License](#license)Install via NuGet Package Manager:
 
-using INT.VrPay.Client;using VrPay.Client;
+using INT.VrPay.Client;
 
-using INT.VrPay.Client.Models;using VrPay.Client.Models;
+using INT.VrPay.Client.Models;
 
-using VrPay.Client.Extensions;
 
-public class PaymentService
 
-{public class PaymentService
+public class PaymentService## Installation```bash
 
-    private readonly IVrPayClient _vrPayClient;{
+{
 
-    private readonly IVrPayClient _vrPayClient;
+    private readonly IVrPayClient _vrPayClient;dotnet add package VrPay.Client
 
-    public PaymentService(IVrPayClient vrPayClient)
 
-    {    public PaymentService(IVrPayClient vrPayClient)
 
-        _vrPayClient = vrPayClient;    {
+    public PaymentService(IVrPayClient vrPayClient)Install the package via NuGet Package Manager:```
 
-    }        _vrPayClient = vrPayClient;
+    {
+
+        _vrPayClient = vrPayClient;
 
     }
 
+```bashOr via Package Manager Console:
+
     public async Task<string> ProcessPaymentAsync(decimal amount)
 
-    {    public async Task<string> ProcessPaymentAsync()
+    {dotnet add package INT.VrPay.Client
 
-        var request = new PaymentRequest    {
+        var request = new PaymentRequest
 
-        {        // Create payment request
+        {``````powershell
 
-            Amount = amount.ToString("F2"),        var request = new PaymentRequest
+            Amount = amount.ToString("F2"),
 
-            Currency = Currency.EUR,        {
+            Currency = Currency.EUR,Install-Package VrPay.Client
 
-            PaymentBrand = PaymentBrand.Visa,            Amount = "92.00",
+            PaymentBrand = PaymentBrand.Visa,
 
-            Card = new CardData            Currency = "EUR",
+            Card = new CardDataOr via Package Manager Console:```
 
-            {            PaymentBrand = "VISA",
+            {
 
-                Number = "4200000000000000",            MerchantTransactionId = $"ORDER-{Guid.NewGuid()}",
+                Number = "4200000000000000",
 
-                Holder = "Jane Doe",            Card = new CardData
+                Holder = "Jane Doe",
 
-                ExpiryMonth = "12",            {
+                ExpiryMonth = "12",```powershell## Quick Start
 
-                ExpiryYear = "2025",                Number = "4200000000000000",
+                ExpiryYear = "2025",
 
-                Cvv = "123"                Holder = "John Doe",
+                Cvv = "123"Install-Package INT.VrPay.Client
 
-            },                ExpiryMonth = "12",
+            },
 
-            Customer = new CustomerData                ExpiryYear = "2034",
+            Customer = new CustomerData```### 1. Configuration
 
-            {                Cvv = "123"
+            {
 
-                GivenName = "Jane",            },
+                GivenName = "Jane",
 
-                Surname = "Doe",            Customer = new CustomerData
+                Surname = "Doe",
 
-                Email = "jane.doe@example.com",            {
+                Email = "jane.doe@example.com",Or add directly to your `.csproj` file:Add VrPay configuration to your `appsettings.json`:
 
-                Ip = "127.0.0.1"                GivenName = "John",
-
-            }                Surname = "Doe",
-
-        };                Email = "john.doe@example.com"
+                Ip = "127.0.0.1"
 
             }
 
-        var response = await _vrPayClient.DebitAsync(request);        };
+        };
 
-        return response.Id;
+```xml```json
 
-    }        // Pre-authorize payment
+        var response = await _vrPayClient.DebitAsync(request);
 
-}        var response = await _vrPayClient.PreAuthorizeAsync(request);
+        return response.Id;<PackageReference Include="INT.VrPay.Client" Version="1.0.0" />{
+
+    }
+
+}```  "VrPay": {
 
 ```
 
-        // Check if successful
+    "BaseUrl": "https://test.vr-pay-ecommerce.de/",
 
-## Configuration        if (response.IsSuccess())
+## Configuration Options
 
-        {
+## Quick Start    "EntityId": "YOUR_ENTITY_ID",
 
-### VrPayConfiguration Properties            // Store transaction ID for later capture
+| Property | Type | Required | Description |
 
-            return response.Id;
+|----------|------|----------|-------------|    "AccessToken": "Bearer YOUR_ACCESS_TOKEN",
 
-| Property | Type | Required | Description |        }
+| `BaseUrl` | string | ✅ | VrPay API base URL |
 
-|----------|------|----------|-------------|
+| `EntityId` | string | ✅ | Your merchant entity ID |### 1. Configure in `appsettings.json`    "TimeoutSeconds": 30,
 
-| `BaseUrl` | `string` | ✅ | VrPay API base URL |        throw new Exception($"Payment failed: {response.Result.Description}");
+| `AccessToken` | string | ✅ | Bearer access token |
 
-| `EntityId` | `string` | ✅ | Your merchant entity ID |    }
+| `UseTestMode` | bool | ❌ | Enable test mode (default: false) |    "TestMode": true,
 
-| `AccessToken` | `string` | ✅ | Bearer access token |
+| `TestModeValue` | string | ❌ | Test mode: EXTERNAL or INTERNAL |
 
-| `UseTestMode` | `bool` | ❌ | Enable test mode (default: `false`) |    public async Task CapturePaymentAsync(string preAuthId, decimal amount)
+| `TimeoutSeconds` | int | ❌ | HTTP timeout (default: 30) |```json    "TestModeValue": "EXTERNAL"
 
-| `TestModeValue` | `string` | ❌ | Test mode type: `EXTERNAL` or `INTERNAL` |    {
+| `MaxRetries` | int | ❌ | Retry attempts (default: 3) |
 
-| `TimeoutSeconds` | `int` | ❌ | HTTP timeout in seconds (default: `30`) |        // Capture the pre-authorized payment
+{  }
 
-| `MaxRetries` | `int` | ❌ | Number of retry attempts (default: `3`) |        var response = await _vrPayClient.CaptureAsync(preAuthId, amount, "EUR");
-
-
-
-### Environment-Specific Configuration        if (!response.IsSuccess())
-
-        {
-
-**appsettings.json** (base configuration):            throw new Exception($"Capture failed: {response.Result.Description}");
-
-```json        }
-
-{    }
+## Usage Examples
 
   "VrPay": {}
 
+### Pre-Authorization
+
     "BaseUrl": "https://test.vr-pay-ecommerce.de",```
 
-    "EntityId": "",
+Reserve funds without capturing them:
 
-    "AccessToken": "",## Payment Flows
-
-    "UseTestMode": true
-
-  }### Two-Step Payment (Pre-Authorization + Capture)
-
-}
-
-``````csharp
-
-// Step 1: Pre-authorize
-
-**appsettings.Development.json** (with secrets):var preAuthResponse = await vrPayClient.PreAuthorizeAsync(request);
-
-```jsonvar transactionId = preAuthResponse.Id;
-
-{
-
-  "VrPay": {// Step 2: Capture (can be partial)
-
-    "EntityId": "8a8294174e735d0c014e78beb6b9154b",var captureResponse = await vrPayClient.CaptureAsync(transactionId, 50.00m, "EUR");
-
-    "AccessToken": "Bearer OGE4Mjk0MTc0ZTczNWQwYzAxNGU3OGJlYjZjNTE1NGZ8TnE3b0UlMmEyQldKcjQlJTZYZFk="```
-
-  }
-
-}### One-Step Payment (Direct Debit)
-
-```
+    "EntityId": "your-entity-id",
 
 ```csharp
 
-## Usage Examples// Direct debit - immediately charges the card
-
-var response = await vrPayClient.DebitAsync(request);
-
-### Pre-Authorization```
-
-
-
-Reserve funds without capturing them immediately:### Refund
-
-
-
-```csharp```csharp
-
-using INT.VrPay.Client.Models;// Refund a captured payment
-
-var refundResponse = await vrPayClient.RefundAsync(captureId, 50.00m, "EUR");
-
-var request = new PaymentRequest```
+var request = new PaymentRequest    "AccessToken": "Bearer your-access-token",Set your access token as an environment variable (recommended for production):
 
 {
 
-    Amount = "92.00",### Reversal
+    Amount = "92.00",    "UseTestMode": true,
 
     Currency = Currency.EUR,
 
-    PaymentBrand = PaymentBrand.Visa,```csharp
+    PaymentBrand = PaymentBrand.Visa,    "TestModeValue": "EXTERNAL",```bash
 
-    MerchantTransactionId = $"ORDER-{Guid.NewGuid()}",// Cancel a pre-authorization
+    MerchantTransactionId = $"ORDER-{Guid.NewGuid()}",
+
+    Card = new CardData    "TimeoutSeconds": 30,# Windows
+
+    {
+
+        Number = "4200000000000000",    "MaxRetries": 3$env:VRPAY_ACCESS_TOKEN="Bearer your-token-here"
+
+        Holder = "John Doe",
+
+        ExpiryMonth = "05",  }
+
+        ExpiryYear = "2026",
+
+        Cvv = "123"}# Linux/Mac
+
+    },
+
+    Customer = new CustomerData```export VRPAY_ACCESS_TOKEN="Bearer your-token-here"
+
+    {
+
+        GivenName = "John",```
+
+        Surname = "Doe",
+
+        Email = "john.doe@example.com",### 2. Register in `Program.cs` (ASP.NET Core)
+
+        Ip = "192.168.1.1"
+
+    },### 2. Register Services
+
+    Billing = new AddressData
+
+    {```csharp
+
+        Street1 = "123 Main St",
+
+        City = "Berlin",using INT.VrPay.Client.Extensions;In your `Program.cs` or `Startup.cs`:
+
+        Postcode = "10115",
+
+        Country = "DE"
+
+    }
+
+};var builder = WebApplication.CreateBuilder(args);```csharp
+
+
+
+var response = await vrPayClient.PreAuthorizeAsync(request);using VrPay.Client.Extensions;
+
+Console.WriteLine($"Pre-Auth ID: {response.Id}");
+
+```// Add VrPay client with configuration
+
+
+
+### Direct Debitbuilder.Services.AddVrPayClient(// Add VrPay client
+
+
+
+Immediately charge a card:    builder.Configuration.GetSection("VrPay"));builder.Services.AddVrPayClient(builder.Configuration);
+
+
+
+```csharp```
+
+var request = new PaymentRequest
+
+{var app = builder.Build();
+
+    Amount = "25.50",
+
+    Currency = Currency.EUR,```### 3. Use the Client
+
+    PaymentBrand = PaymentBrand.Master,
+
+    Card = new CardData
+
+    {
+
+        Number = "5454545454545454",### 3. Inject and UseInject `IVrPayClient` into your services:
+
+        Holder = "Jane Smith",
+
+        ExpiryMonth = "12",
+
+        ExpiryYear = "2025",
+
+        Cvv = "456"```csharp```csharp
+
+    }
+
+};using INT.VrPay.Client;using VrPay.Client;
+
+
+
+var response = await vrPayClient.DebitAsync(request);using INT.VrPay.Client.Models;using VrPay.Client.Models;
+
+```
+
+using VrPay.Client.Extensions;
+
+### Capture
+
+public class PaymentService
+
+Capture a pre-authorized payment:
+
+{public class PaymentService
+
+```csharp
+
+// Full capture    private readonly IVrPayClient _vrPayClient;{
+
+var captureResponse = await vrPayClient.CaptureAsync(
+
+    preAuthId,     private readonly IVrPayClient _vrPayClient;
+
+    amount: 92.00m, 
+
+    currency: Currency.EUR    public PaymentService(IVrPayClient vrPayClient)
+
+);
+
+    {    public PaymentService(IVrPayClient vrPayClient)
+
+// Partial capture
+
+var partialCapture = await vrPayClient.CaptureAsync(        _vrPayClient = vrPayClient;    {
+
+    preAuthId, 
+
+    amount: 50.00m,     }        _vrPayClient = vrPayClient;
+
+    currency: Currency.EUR
+
+);    }
+
+```
+
+    public async Task<string> ProcessPaymentAsync(decimal amount)
+
+### Refund
+
+    {    public async Task<string> ProcessPaymentAsync()
+
+Refund a captured payment:
+
+        var request = new PaymentRequest    {
+
+```csharp
+
+// Full refund        {        // Create payment request
+
+var refundResponse = await vrPayClient.RefundAsync(
+
+    captureId,             Amount = amount.ToString("F2"),        var request = new PaymentRequest
+
+    amount: 25.50m, 
+
+    currency: Currency.EUR            Currency = Currency.EUR,        {
+
+);
+
+```            PaymentBrand = PaymentBrand.Visa,            Amount = "92.00",
+
+
+
+### Reversal            Card = new CardData            Currency = "EUR",
+
+
+
+Cancel a pre-authorization:            {            PaymentBrand = "VISA",
+
+
+
+```csharp                Number = "4200000000000000",            MerchantTransactionId = $"ORDER-{Guid.NewGuid()}",
+
+var reversalResponse = await vrPayClient.ReverseAsync(
+
+    preAuthId,                Holder = "Jane Doe",            Card = new CardData
+
+    amount: 92.00m,
+
+    currency: Currency.EUR                ExpiryMonth = "12",            {
+
+);
+
+```                ExpiryYear = "2025",                Number = "4200000000000000",
+
+
+
+## Test Cards                Cvv = "123"                Holder = "John Doe",
+
+
+
+For testing in the VrPay test environment:            },                ExpiryMonth = "12",
+
+
+
+| Card Number | Brand | Result |            Customer = new CustomerData                ExpiryYear = "2034",
+
+|-------------|-------|--------|
+
+| 4200000000000000 | Visa | ✅ Success |            {                Cvv = "123"
+
+| 5454545454545454 | Mastercard | ✅ Success |
+
+| 378282246310005 | Amex | ✅ Success |                GivenName = "Jane",            },
+
+| 4000300011112220 | Visa | ❌ Declined |
+
+| 5555444433331111 | Mastercard | ❌ Declined |                Surname = "Doe",            Customer = new CustomerData
+
+
+
+Or use the predefined test cards:                Email = "jane.doe@example.com",            {
+
+
+
+```csharp                Ip = "127.0.0.1"                GivenName = "John",
+
+using INT.VrPay.Client.Testing;
+
+            }                Surname = "Doe",
+
+var visaSuccess = TestCards.VisaSuccess;
+
+var request = TestData.CreateSuccessfulPaymentRequest(        };                Email = "john.doe@example.com"
+
+    amount: 50.00m,
+
+    currency: Currency.EUR,            }
+
+    paymentBrand: PaymentBrand.Visa
+
+);        var response = await _vrPayClient.DebitAsync(request);        };
+
+```
+
+        return response.Id;
+
+## Error Handling
+
+    }        // Pre-authorize payment
+
+The library provides specific exception types:
+
+}        var response = await _vrPayClient.PreAuthorizeAsync(request);
+
+```csharp
+
+using INT.VrPay.Client.Exceptions;```
+
+
+
+try        // Check if successful
+
+{
+
+    var response = await vrPayClient.DebitAsync(request);## Configuration        if (response.IsSuccess())
+
+}
+
+catch (VrPayPaymentDeclinedException ex)        {
+
+{
+
+    // Payment declined by bank### VrPayConfiguration Properties            // Store transaction ID for later capture
+
+    Console.WriteLine($"Declined: {ex.ResultCode}");
+
+}            return response.Id;
+
+catch (VrPayValidationException ex)
+
+{| Property | Type | Required | Description |        }
+
+    // Request validation failed
+
+    foreach (var error in ex.ValidationErrors)|----------|------|----------|-------------|
+
+    {
+
+        Console.WriteLine($"Error: {error}");| `BaseUrl` | `string` | ✅ | VrPay API base URL |        throw new Exception($"Payment failed: {response.Result.Description}");
+
+    }
+
+}| `EntityId` | `string` | ✅ | Your merchant entity ID |    }
+
+catch (VrPayCommunicationException ex)
+
+{| `AccessToken` | `string` | ✅ | Bearer access token |
+
+    // Network or HTTP error
+
+    Console.WriteLine($"Communication error: {ex.Message}");| `UseTestMode` | `bool` | ❌ | Enable test mode (default: `false`) |    public async Task CapturePaymentAsync(string preAuthId, decimal amount)
+
+}
+
+catch (VrPayConfigurationException ex)| `TestModeValue` | `string` | ❌ | Test mode type: `EXTERNAL` or `INTERNAL` |    {
+
+{
+
+    // Configuration error| `TimeoutSeconds` | `int` | ❌ | HTTP timeout in seconds (default: `30`) |        // Capture the pre-authorized payment
+
+    Console.WriteLine($"Config error: {ex.Message}");
+
+}| `MaxRetries` | `int` | ❌ | Number of retry attempts (default: `3`) |        var response = await _vrPayClient.CaptureAsync(preAuthId, amount, "EUR");
+
+```
+
+
+
+## Domain Model
+
+### Environment-Specific Configuration        if (!response.IsSuccess())
+
+### Key Enums
+
+        {
+
+**PaymentType**:
+
+- `PreAuthorization` (PA)**appsettings.json** (base configuration):            throw new Exception($"Capture failed: {response.Result.Description}");
+
+- `Debit` (DB)
+
+- `Capture` (CP)```json        }
+
+- `Refund` (RF)
+
+- `Reversal` (RV){    }
+
+
+
+**PaymentBrand**:  "VrPay": {}
+
+- `Visa`, `Master`, `Amex`, `Maestro`, and more
+
+    "BaseUrl": "https://test.vr-pay-ecommerce.de",```
+
+**Currency**:
+
+- `EUR`, `USD`, `GBP`, `CHF`, `JPY`, etc. (ISO 4217)    "EntityId": "",
+
+
+
+**TransactionStatus**:    "AccessToken": "",## Payment Flows
+
+- `Success`, `Pending`, `Declined`, `Error`, `Unknown`
+
+    "UseTestMode": true
+
+## Development
+
+  }### Two-Step Payment (Pre-Authorization + Capture)
+
+### Building
+
+}
+
+```bash
+
+dotnet build src/INT.VrPay.Client.slnx``````csharp
+
+```
+
+// Step 1: Pre-authorize
+
+### Testing
+
+**appsettings.Development.json** (with secrets):var preAuthResponse = await vrPayClient.PreAuthorizeAsync(request);
+
+```bash
+
+# Run all tests```jsonvar transactionId = preAuthResponse.Id;
+
+dotnet test src/INT.VrPay.Client.slnx
+
+{
+
+# Unit tests only
+
+dotnet test --filter "FullyQualifiedName~INT.VrPay.Client.Tests"  "VrPay": {// Step 2: Capture (can be partial)
+
+
+
+# Integration tests only    "EntityId": "8a8294174e735d0c014e78beb6b9154b",var captureResponse = await vrPayClient.CaptureAsync(transactionId, 50.00m, "EUR");
+
+dotnet test --filter "FullyQualifiedName~INT.VrPay.Client.IntegrationTests"
+
+```    "AccessToken": "Bearer OGE4Mjk0MTc0ZTczNWQwYzAxNGU3OGJlYjZjNTE1NGZ8TnE3b0UlMmEyQldKcjQlJTZYZFk="```
+
+
+
+### Creating a Package  }
+
+
+
+```bash}### One-Step Payment (Direct Debit)
+
+dotnet pack --configuration Release
+
+``````
+
+
+
+## Requirements```csharp
+
+
+
+- .NET 9.0 or higher## Usage Examples// Direct debit - immediately charges the card
+
+- Visual Studio 2022 17.8+ or Rider 2024.1+
+
+var response = await vrPayClient.DebitAsync(request);
+
+## Dependencies
+
+### Pre-Authorization```
+
+- Microsoft.Extensions.Http
+
+- Microsoft.Extensions.Http.Polly
+
+- Polly (retry and circuit breaker policies)
+
+- System.Text.JsonReserve funds without capturing them immediately:### Refund
+
+
+
+## Contributing
+
+
+
+Contributions are welcome! Please:```csharp```csharp
+
+
+
+1. Fork the repositoryusing INT.VrPay.Client.Models;// Refund a captured payment
+
+2. Create a feature branch
+
+3. Commit your changesvar refundResponse = await vrPayClient.RefundAsync(captureId, 50.00m, "EUR");
+
+4. Push to the branch
+
+5. Open a Pull Requestvar request = new PaymentRequest```
+
+
+
+## License{
+
+
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.    Amount = "92.00",### Reversal
+
+
+
+## Support    Currency = Currency.EUR,
+
+
+
+- 🐛 [Report bugs](https://github.com/yourusername/INT.VrPay.Client/issues)    PaymentBrand = PaymentBrand.Visa,```csharp
+
+- 💡 [Request features](https://github.com/yourusername/INT.VrPay.Client/issues)
+
+- 📖 VrPay Documentation: https://vr-pay-ecommerce.docs.oppwa.com/    MerchantTransactionId = $"ORDER-{Guid.NewGuid()}",// Cancel a pre-authorization
+
 
     Card = new CardDatavar reversalResponse = await vrPayClient.ReverseAsync(preAuthId);
 
